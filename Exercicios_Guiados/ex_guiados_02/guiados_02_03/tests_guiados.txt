@@ -1,0 +1,23 @@
+# Users
+
+curl http://localhost:3000/users
+curl -X POST http://localhost:3000/users -H "Content-Type: application/json" -d '{"name":"João","email":"joao@example.com"}'
+curl -X PUT http://localhost:3000/users -H "Content-Type: application/json" -d '{"id":1,"name":"Alice Souza"}'
+curl -X DELETE http://localhost:3000/users -H "Content-Type: application/json" -d '{"id":2}'
+
+# Tags
+curl http://localhost:3000/users
+curl -X POST http://localhost:3000/users -H "Content-Type: application/json" -d '{"name":"João","email":"joao@example.com"}'
+curl -X PUT http://localhost:3000/users -H "Content-Type: application/json" -d '{"id":1,"name":"Alice Souza"}'
+curl -X DELETE http://localhost:3000/users -H "Content-Type: application/json" -d '{"id":2}'
+
+# Comments
+
+curl http://localhost:3000/comments?taskId=1
+curl -X POST http://localhost:3000/comments -H "Content-Type: application/json" -d '{"taskId":1,"userId":1,"content":"Comentário teste"}'
+curl -X PUT http://localhost:3000/comments -H "Content-Type: application/json" -d '{"id":1,"resolved":true}'
+
+
+# Notifications
+
+curl http://localhost:3000/notifications?userId=1

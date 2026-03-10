@@ -1,0 +1,19 @@
+# GET – listar tarefas
+curl http://localhost:3000/tasks
+
+# POST – criar tarefa
+curl -X POST http://localhost:3000/tasks \
+  -H "Content-Type: application/json" \
+  -d '{"title":"Aprender APIs"}'
+
+
+  # PUT – atualizar tarefa
+   curl -X PUT http://localhost:3000/tasks \
+  -H "Content-Type: application/json" \
+  -d '{"id":1,"title":"Estudar Node.js"}'
+
+
+  # DELETE – remover tarefa
+  curl -X DELETE http://localhost:3000/tasks \
+  -H "Content-Type: application/json" \
+  -d '{"id":1}'

@@ -1,0 +1,218 @@
+<html>
+
+<head>
+    <style>
+        body {
+            color: black;
+            font-family: Arial;
+            line-height: 1.6;
+        }
+
+        h1 {
+            color: #006600;
+        }
+
+        h2 {
+            color: #003366;
+        }
+
+        hr {
+            margin: 20px 0;
+        }
+
+        pre {
+            background-color: #f0f0f0;
+            padding: 10px;
+        }
+
+        b {
+            background-color: #f0f0f0;
+            padding: 2px 4px;
+        }
+
+        i {
+            color: #555;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>💡 Exercícios de Backend — APIs HTTP (Mini ClickUp Use Cases Diferentes)</h1>
+
+<p>
+📌 <b>Regras gerais:</b><br>
+- Criar servidor Node.js com módulo <b>http</b><br>
+- Usar JSON nas respostas<br>
+</p>
+
+<hr>
+
+<h1>🧑‍🏫 Exercícios Guiados (Em Aula)</h1>
+
+<h2>📝 Exercício 1 — Criar lista de utilizadores</h2>
+<p>
+Cria um array <b>users</b> com objetos: <b>id</b>, <b>name</b>, <b>email</b>.
+</p>
+<p>
+Endpoint: <b>GET /users</b> — retorna todos os utilizadores.
+</p>
+
+<hr>
+
+<h2>📝 Exercício 2 — Criar novo utilizador</h2>
+<p>
+Endpoint: <b>POST /users</b>
+</p>
+<p>
+Body JSON:
+
+<pre>
+{
+  "name": "João Silva",
+  "email": "joao@example.com"
+}
+</pre>
+
+<i>Dica:</i> gerar <b>id</b> automático e adicionar ao array.
+</p>
+
+<hr>
+
+<h2>📝 Exercício 3 — Atualizar utilizador</h2>
+<p>
+Endpoint: <b>PUT /users</b>
+</p>
+<p>
+Body JSON:
+
+<pre>
+{
+  "id": 1,
+  "name": "João Souza"
+}
+</pre>
+
+<i>Dica:</i> encontrar pelo <b>id</b> e atualizar nome.
+</p>
+
+<hr>
+
+<h2>📝 Exercício 4 — Remover utilizador</h2>
+<p>
+Endpoint: <b>DELETE /users</b>
+</p>
+<p>
+Body JSON:
+
+<pre>
+{
+  "id": 1
+}
+</pre>
+
+<i>Dica:</i> usar <b>filter()</b> para remover do array.
+</p>
+
+<hr>
+
+<h2>📝 Exercício 5 — Criar tags</h2>
+<p>
+Cria um array <b>tags</b> com objetos: <b>id</b>, <b>name</b>.
+</p>
+<p>
+Endpoint: <b>GET /tags</b> — retorna todas as tags.
+</p>
+
+<hr>
+
+<h2>📝 Exercício 6 — Adicionar tag a tarefa</h2>
+<p>
+Endpoint: <b>POST /task-tags</b>
+</p>
+<p>
+Body JSON:
+
+<pre>
+{
+  "taskId": 2,
+  "tagId": 1
+}
+</pre>
+
+<i>Dica:</i> criar array <b>taskTags</b> para relacionar tarefas e tags.
+</p>
+
+<hr>
+
+<h2>📝 Exercício 7 — Criar comentários</h2>
+<p>
+Cria um array <b>comments</b> com objetos: <b>id</b>, <b>taskId</b>, <b>userId</b>, <b>content</b>.
+</p>
+<p>
+Endpoint: <b>GET /comments?taskId=1</b> — retorna comentários de uma tarefa específica.
+</p>
+
+<hr>
+
+<h2>📝 Exercício 8 — Adicionar comentário</h2>
+<p>
+Endpoint: <b>POST /comments</b>
+</p>
+<p>
+Body JSON:
+
+<pre>
+{
+  "taskId": 1,
+  "userId": 2,
+  "content": "Comentário de teste"
+}
+</pre>
+
+<i>Dica:</i> adicionar ao array <b>comments</b> com <b>id</b> automático.
+</p>
+
+<hr>
+
+<h2>📝 Exercício 9 — Marcar comentário como resolvido</h2>
+<p>
+Endpoint: <b>PUT /comments</b>
+</p>
+<p>
+Body JSON:
+
+<pre>
+{
+  "id": 3,
+  "resolved": true
+}
+</pre>
+
+<i>Dica:</i> adicionar propriedade <b>resolved: false</b> inicialmente, atualizar para true.
+</p>
+
+<hr>
+
+<h2>📝 Exercício 10 — Listar notificações</h2>
+<p>
+Cria um array <b>notifications</b> com objetos: <b>id</b>, <b>userId</b>, <b>message</b>, <b>read</b>.
+</p>
+<p>
+Endpoint: <b>GET /notifications?userId=1</b> — retorna notificações de um utilizador específico.
+</p>
+
+<hr>
+
+<h2>🎯 Objetivos da Aula</h2>
+<p>
+✔ Aprender a criar endpoints REST para diferentes use cases<br>
+✔ Manipular arrays e relacionamentos simples entre dados<br>
+✔ Ler query parameters e body JSON<br>
+✔ Implementar métodos HTTP (GET, POST, PUT, DELETE)<br>
+✔ Preparar para trabalhar com APIs reais tipo ClickUp
+</p>
+
+</body>
+
+</html>
