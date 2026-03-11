@@ -1,0 +1,122 @@
+<html>
+
+<head>
+    <style>
+        body {
+            color: black;
+            font-family: Arial;
+            line-height: 1.6;
+        }
+
+        h1 {
+            color: #006600;
+        }
+
+        h2 {
+            color: #003366;
+        }
+
+        hr {
+            margin: 20px 0;
+        }
+
+        pre {
+            background-color: #f0f0f0;
+            padding: 10px;
+        }
+
+        b {
+            background-color: #f0f0f0;
+            padding: 2px 4px;
+        }
+
+        i {
+            color: #555;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>💡 Exercícios Autónomos — Mini ClickUp APIs</h1>
+
+<p>
+📌 <b>Regras gerais:</b><br>
+- Usar Node.js e módulo <b>http</b><br>
+- Trabalhar com arrays JSON e múltiplos relacionamentos<br>
+
+
+<hr>
+
+
+<h2>📝 Exercício 1 — Atribuir múltiplos utilizadores a uma tarefa</h2>
+<p>
+Cria um array <b>taskUsers</b> com objetos: <b>taskId</b> e <b>userId</b>.
+</p>
+<p>
+Endpoint: <b>POST /task-users</b><br>
+Body JSON:
+<pre>
+{
+  "taskId": 2,
+  "userId": 1
+}
+</pre>
+</p>
+
+<hr>
+
+<h2>📝 Exercício 2 — Notificação automática ao adicionar comentário</h2>
+<p>
+Quando um comentário é criado, adiciona automaticamente uma notificação para o <b>userId</b> do comentário.
+</p>
+<p>
+<i>Dica:</i><br>
+- No endpoint <b>POST /comments</b>, após adicionar o comentário, cria um objeto <b>notifications</b> com <b>message</b> informando sobre o comentário.
+</p>
+
+<hr>
+
+<h2>📝 Exercício 3 — Listar tarefas concluídas e pendentes</h2>
+<p>
+Endpoint: <b>GET /tasks?done=true</b> ou <b>done=false</b>
+</p>
+<p>
+<i>Dica:</i><br>
+- Ler query parameter <b>done</b><br>
+- Filtrar o array <b>tasks</b> usando <b>filter()</b> e retornar JSON apenas com tarefas correspondentes.
+</p>
+
+<hr>
+
+<h2>📝 Exercício 4 — Marcar tarefa como favorita</h2>
+<p>
+Adicionar propriedade <b>favorite</b> a tarefas e criar endpoint <b>PUT /tasks/favorite</b>
+</p>
+<p>
+Body JSON:
+<pre>
+{
+  "taskId": 1,
+  "favorite": true
+}
+</pre>
+<p>
+<i>Dica:</i> atualizar a tarefa correspondente no array <b>tasks</b> e retornar o objeto atualizado.
+</p>
+
+<hr>
+
+
+<h2>🎯 Objetivos dos Exercícios Avançados</h2>
+
+<p>
+✔ Praticar relações muitos-para-muitos (task-users)<br>
+✔ Aprender a criar notificações automáticas<br>
+✔ Trabalhar com filtros e query parameters avançados<br>
+✔ Consolidar lógica de API REST real
+</p>
+
+</body>
+
+</html>
