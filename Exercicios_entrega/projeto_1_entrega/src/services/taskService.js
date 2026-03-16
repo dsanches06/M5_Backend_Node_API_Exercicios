@@ -1,4 +1,5 @@
 let tasks = [];
+let taskTags = [];
 
 export const getAllTasks = (search, sort) => {
   let result = [...tasks];
@@ -38,15 +39,6 @@ export const createTask = (data) => {
     dataConclusao: undefined,
   };
 
-  if (task.title.length <= 3) {
-    throw new Error("Title must be more than 3 characters");
-  }
-
-  if (!task.responsavel) {
-    throw new Error("Responsible name cannot be empty");
-  }
-  
-
   tasks.push(task);
   return task;
 };
@@ -72,6 +64,56 @@ export const updateTask = (taskId, data) => {
 
 export const deleteTask = (taskId) => {
   tasks = tasks.filter((t) => t.id !== taskId);
+  taskTags = taskTags.filter((tt) => tt.taskId !== taskId);
+};
+
+export const getTaskById = (taskId) => {
+  return tasks.find((t) => t.id === taskId);
+};
+
+export const addTagToTask = (taskId, tagId) => {
+  const task = tasks.find((t) => t.id === taskId);
+  if (!task) {
+    throw new Error("Task not found");
+  }
+
+  const relationExists = taskTags.some(
+    (tt) => tt.taskId === taskId && tt.tagId === tagId
+  );
+
+  if (relationExists) {
+    throw new Error("Tag already associated with task");
+  }
+
+  const relation = {
+    taskId: taskId,
+    tagId: tagId,
+  };
+
+  taskTags.push(relation);
+  return relation;
+};
+
+export const removeTagFromTask = (taskId, tagId) => {
+  const relationIndex = taskTags.findIndex(
+    (tt) => tt.taskId === taskId && tt.tagId === tagId
+  );
+
+  if (relationIndex === -1) {
+    throw new Error("Tag not associated with task");
+  }
+
+  const relation = taskTags[relationIndex];
+  taskTags.splice(relationIndex, 1);
+  return relation;
+};
+
+export const getTagsByTaskId = (taskId) => {
+  return taskTags.filter((tt) => tt.taskId === taskId);
+};
+
+export const removeTagFromAllTasks = (tagId) => {
+  taskTags = taskTags.filter((tt) => tt.tagId !== tagId);
 };
 
 export const getTaskStats = () => {

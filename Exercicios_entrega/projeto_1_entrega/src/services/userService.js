@@ -28,31 +28,6 @@ export const getAllUsers = (search, sort) => {
 };
 
 export const createUser = (data) => {
-
-  if (data.name !== undefined) {
-    if (data.name.length < 3) {
-      return res.status(400).json({
-        error: `O nome ${data.name} tem que ter 3 caracteres no minimo!`,
-      });
-    }
-  } else {
-    return res
-      .status(400)
-      .json({ error: `O nome ${data.name} não pode ser vazio!` });
-  }
-
-  if (data.email !== undefined) {
-    if (!data.email.includes("@")) {
-      return res
-        .status(400)
-        .json({ error: `O email ${data.email} é inválido!` });
-    }
-  } else {
-    return res
-      .status(400)
-      .json({ error: `O email ${data.email} não pode ser vazio!` });
-  }
-
   const user = {
     id: users.length + 1,
     name: data.name,
@@ -87,6 +62,10 @@ export const toggleUserActive = (userId) => {
 
 export const deleteUser = (userId) => {
   users = users.filter((u) => u.id !== userId);
+};
+
+export const getUserById = (userId) => {
+  return users.find((u) => u.id === userId);
 };
 
 export const getUserStats = () => {
