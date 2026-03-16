@@ -1,0 +1,316 @@
+<html>
+
+<head>
+    <style>
+        body {
+            color: black;
+            font-family: Arial;
+            line-height: 1.6;
+        }
+
+        h1 {
+            color: #006600;
+        }
+
+        h2 {
+            color: #003366;
+        }
+
+        hr {
+            margin: 20px 0;
+        }
+
+        pre {
+            background-color: #f0f0f0;
+            padding: 10px;
+        }
+
+        b {
+            background-color: #f0f0f0;
+            padding: 2px 4px;
+        }
+
+        i {
+            color: #555;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>💡 Projeto 1 — Primeira API Completa</h1>
+
+<ul>
+<li>O objetivo deste projeto é criar uma API completa para gerenciamento de tarefas, incluindo utilizadores, tarefas, tags e comentários.</li>
+<li>Deve ser entregue todos os endpoints mencionados em aula e nos exercícios de entrega.</li>
+<li>Usar Node.js com Express e JSON nas respostas.</li>
+<li>Todos os dados devem ser mantidos em memória usando arrays (simulando base de dados).</li>
+<li>Validações e lógica de negócio devem ser feitas nos <b>services</b>, controllers apenas retornam JSON.</li>
+<li>IDs devem ser gerados automaticamente para todas as entidades (users, tasks, tags, comments).</li>
+</ul>
+
+<hr>
+
+<h2>📁 Estrutura final do projeto</h2>
+
+<pre>
+src/
+  controllers/
+    userController.js
+    taskController.js        &lt;-- também trata /tasks/:id/comments e /tasks/:id/tags
+    tagController.js
+  services/
+    userService.js
+    taskService.js           &lt;-- array tasks e funções auxiliares
+    tagService.js            &lt;-- array tags, importa taskService para validar tarefas
+    commentService.js        &lt;-- array comments, importa taskService e userService para validações
+  routes/
+    userRoutes.js
+    taskRoutes.js            &lt;-- endpoints de tarefas, comentários e tags por tarefa
+    tagRoutes.js             &lt;-- endpoints globais de tags
+  middlewares/
+    checkUserExists.js
+  app.js
+</pre>
+
+<p><i>Observação:</i> Não é necessário criar arrays de comentários ou tags dentro dos controllers. Controllers chamam os services e retornam JSON.</p>
+
+<hr>
+
+<h2>📡 Endpoints já implementados em aula</h2>
+
+<h3>Users</h3>
+
+<pre>
+GET /users
+POST /users
+PUT /users/:id
+PATCH /users/:id      
+DELETE /users/:id
+GET /users?sort=asc|desc
+GET /users?search=nome
+GET /users/stats
+</pre>
+
+<h3>Tasks</h3>
+
+<pre>
+GET /tasks
+POST /tasks
+PUT /tasks/:id
+DELETE /tasks/:id
+GET /tasks?sort=asc|desc
+GET /tasks?search=titulo
+GET /tasks/stats
+</pre>
+
+<hr>
+
+<h1>🆕 Novas funcionalidades a implementar</h1>
+
+<p>Além dos endpoints de users e tasks, o projeto agora deve incluir:</p>
+
+<ul>
+<li>Tags para classificar tarefas (N:N com tasks)</li>
+<li>Comentários em tarefas (1:N com tasks)</li>
+</ul>
+
+<hr>
+
+<h2>📁 Novos ficheiros a criar</h2>
+
+<pre>
+src/
+  controllers/
+    tagController.js
+    commentController.js      &lt;-- opcional, chamado pelo taskController
+  services/
+    tagService.js
+    commentService.js
+  routes/
+    tagRoutes.js              &lt;-- endpoints globais de tags
+    taskRoutes.js             &lt;-- endpoints de tarefas, comentários e tags por tarefa
+</pre>
+
+<p><i>Observação:</i> Comentários são acessados via <b>taskRoutes.js</b> (ex.: /tasks/:id/comments). Não é necessário commentRoutes.js separado.</p>
+
+<hr>
+
+<h2>📝 Exercícios de entrega (Novas funcionalidades)</h2>
+
+<h3>Exercício 1 — Criar sistema de tags (atualizado)</h3>
+<p>Criar sistema de <b>tags</b> para classificar tarefas.</p>
+
+Objeto tag:
+
+<pre>
+id
+nome
+</pre>
+
+Endpoints:
+
+<pre>
+GET /tags
+POST /tags
+DELETE /tags/:id
+</pre>
+
+Body JSON POST:
+
+<pre>
+{
+  "nome": "backend"
+}
+</pre>
+
+<i>Dicas:</i>
+<ul>
+<li>Criar array <b>tags</b> dentro de <b>tagService.js</b></li>
+<li>Gerar id automático</li>
+<li>Validar nome da tag</li>
+<li>Ao deletar uma tag, remover também todas as associações dessa tag no array <b>taskTags</b> do taskService</li>
+<li>Service retorna a tag deletada ou uma mensagem de erro, controller apenas retorna JSON</li>
+</ul>
+
+<hr>
+
+<h3>Exercício 2 — Associar tag a uma tarefa</h3>
+<p>Uma tarefa pode ter várias tags e uma tag pode pertencer a várias tarefas (N:N).</p>
+
+Array de relação dentro do <b>taskService.js</b>:
+
+<pre>
+const taskTags = [];
+</pre>
+
+Objeto relação:
+
+<pre>
+taskId
+tagId
+</pre>
+
+Endpoint:
+
+<pre>
+POST /tasks/:id/tags
+</pre>
+
+Body JSON:
+
+<pre>
+{
+  "tagId": 1
+}
+</pre>
+
+<p><i>Nota:</i> Existe outra forma válida de implementar a associação entre tarefas e tags. Em vez de usar um array separado <b>taskTags</b>, poder-se-ia armazenar diretamente um array de objetos <b>tags</b> dentro de cada tarefa. Essa abordagem simplifica o retorno das tarefas com suas tags, mas torna a manutenção de tags globais compartilhadas entre várias tarefas um pouco mais complexa. Ambas as implementações são aceitáveis para este projeto.</p>
+
+<i>Dicas:</i>
+<ul>
+<li>Verificar se tarefa existe (importando taskService)</li>
+<li>Verificar se tag existe (importando tagService)</li>
+<li>Evitar duplicação da mesma associação</li>
+<li>Service deve retornar a associação criada, controller apenas retorna JSON</li>
+</ul>
+
+<hr>
+
+<h3>Exercício 3 — Listar tarefas de uma tag</h3>
+
+Endpoint:
+
+<pre>
+GET /tags/:id/tasks
+</pre>
+
+Retorna todas as tarefas associadas à tag com id fornecido.
+
+<i>Dicas:</i>
+<ul>
+<li>Usar array <b>taskTags</b> do taskService para buscar associações</li>
+<li>Buscar as tarefas correspondentes no array <b>tasks</b> do taskService</li>
+<li>Retornar JSON com lista de tarefas</li>
+</ul>
+
+<hr>
+
+<h3>Exercício 4 — Criar comentários em tarefas</h3>
+
+<p>Comentários são 1:N com tarefas (cada comentário pertence a uma única tarefa).</p>
+
+Array dentro de <b>commentService.js</b>:
+
+<pre>
+const comments = [];
+</pre>
+
+Objeto comentário:
+
+<pre>
+id
+taskId
+userId
+conteudo
+dataCriacao
+</pre>
+
+Endpoint:
+
+<pre>
+POST /tasks/:id/comments
+</pre>
+
+Body JSON:
+
+<pre>
+{
+  "userId": 2,
+  "conteudo": "Esta tarefa precisa de revisão"
+}
+</pre>
+
+<i>Dicas:</i>
+<ul>
+<li>Verificar se tarefa existe (importando taskService)</li>
+<li>Verificar se utilizador existe (importando userService)</li>
+<li>Gerar id automático</li>
+<li>Guardar data atual</li>
+<li>Service retorna o comentário criado, controller apenas envia JSON</li>
+</ul>
+
+<hr>
+
+<h3>Exercício 5 — Listar comentários de uma tarefa</h3>
+
+Endpoint:
+
+<pre>
+GET /tasks/:id/comments
+</pre>
+
+Retorna todos os comentários associados à tarefa.
+
+<i>Dicas:</i>
+<ul>
+<li>Filtrar array <b>comments</b> pelo <b>taskId</b></li>
+<li>Ordenar por data se desejado</li>
+<li>Retornar JSON</li>
+</ul>
+
+<hr>
+
+<h2>🎯 Objetivos destes exercícios</h2>
+
+<p>
+✔ Migrar toda a lógica que estava no front-end para o backend<br>
+✔ Expandir a API com novas entidades (Tags e Comentários)<br>
+✔ Trabalhar com relações 1:N (comentários → tarefas) e N:N (tags ↔ tarefas)<br>
+✔ Manter arquitetura controllers / services / routes<br>
+✔ Preparar o projeto para futura integração com base de dados
+</p>
+
+</body>
+
+</html>

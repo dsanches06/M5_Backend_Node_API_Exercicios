@@ -1,0 +1,307 @@
+<html>
+
+<head>
+    <style>
+        body {
+            color: black;
+            font-family: Arial;
+            line-height: 1.6;
+        }
+
+        h1 {
+            color: #006600;
+        }
+
+        h2 {
+            color: #003366;
+        }
+
+        hr {
+            margin: 20px 0;
+        }
+
+        pre {
+            background-color: #f0f0f0;
+            padding: 10px;
+        }
+
+        b {
+            background-color: #f0f0f0;
+            padding: 2px 4px;
+        }
+
+        i {
+            color: #555;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>💡 Exercícios de Backend — Mini ClickUp (Todas as Funcionalidades)</h1>
+
+<p>
+📌 <b>Regras gerais:</b><br>
+- Criar servidor Node.js com <b>Express</b><br>
+- Usar JSON nas respostas<br>
+- Usar arrays em memória para simular base de dados<br>
+- Estrutura de ficheiros: <b>controllers/</b>, <b>services/</b>, <b>routes/</b>, <b>middlewares/</b>, <b>app.js</b>
+</p>
+
+<hr>
+
+<h1>🧑‍🏫 Exercícios Guiados</h1>
+
+<h2>📝 Exercício 1 — Criar lista de utilizadores</h2>
+<p>
+Cria um array <b>users</b> com objetos: <b>id</b>, <b>nome</b>, <b>email</b>, <b>ativo</b>.
+</p>
+<p>
+Endpoint: <b>GET /users</b> — retorna todos os utilizadores.
+</p>
+<p>
+<i>Dicas:</i>
+<ul>
+<li>Usar um service <b>userService.js</b> para retornar a lista</li>
+<li>Controller <b>userController.js</b> apenas envia a resposta JSON</li>
+</ul>
+</p>
+
+<hr>
+
+<h2>📝 Exercício 2 — Criar novo utilizador</h2>
+<p>
+Endpoint: <b>POST /users</b>
+</p>
+<p>
+Body JSON:
+
+<pre>
+{
+  "nome": "Daniel Moraes",
+  "email": "daniel@example.com"
+}
+</pre>
+
+<i>Dicas:</i>
+<ul>
+<li>Gerar <b>id</b> automático </li>
+<li>Inicializar <b>ativo</b> como true</li>
+<li>Adicionar ao array <b>users</b> no service</li>
+<li>Validar email antes de adicionar</li>
+</ul>
+</p>
+
+<hr>
+
+<h2>📝 Exercício 3 — Atualizar utilizador</h2>
+<p>
+Endpoint: <b>PUT /users/:id</b>
+</p>
+<p>
+Body JSON:
+
+<pre>
+{
+  "nome": "Daniel Moraes Silva",
+  "email": "daniel.silva@example.com",
+  "ativo": false
+}
+</pre>
+
+<i>Dicas:</i>
+<ul>
+<li>Encontrar o utilizador pelo <b>id</b> no service</li>
+<li>Atualizar os campos fornecidos</li>
+<li>Retornar o utilizador atualizado</li>
+</ul>
+</p>
+
+<hr>
+
+<h2>📝 Exercício 4 — Alternar ativo/inativo de utilizador</h2>
+<p>
+Endpoint: <b>PATCH /users/:id</b>
+</p>
+<p>
+<i>Dicas:</i>
+<ul>
+<li>Ver ficheiro updateUserController.js</li>
+</ul>
+</p>
+
+<hr>
+
+<h2>📝 Exercício 5 — Remover utilizador</h2>
+<p>
+Endpoint: <b>DELETE /users/:id</b>
+</p>
+<p>
+<i>Dicas:</i>
+<ul>
+<li>Usar <b>filter()</b> para remover do array</li>
+</ul>
+</p>
+
+<hr>
+
+<h2>📝 Exercício 6 — Criar lista de tarefas</h2>
+<p>
+Cria um array <b>tasks</b> com objetos: <b>id</b>, <b>titulo</b>, <b>categoria</b>, <b>concluida</b>, <b>responsavelNome</b>, <b>dataConclusao</b>.
+</p>
+<p>
+Endpoint: <b>GET /tasks</b> — retorna todas as tarefas.
+</p>
+<p>
+<i>Dicas:</i>
+<ul>
+<li>Service <b>taskService.js</b> retorna lista</li>
+<li>Controller apenas envia JSON</li>
+</ul>
+</p>
+
+<hr>
+
+<h2>📝 Exercício 7 — Criar nova tarefa</h2>
+<p>
+Endpoint: <b>POST /tasks</b>
+</p>
+<p>
+Body JSON:
+
+<pre>
+{
+  "titulo": "Estudar Node.js",
+  "categoria": "trabalho",
+  "responsavelNome": "Daniel Moraes"
+}
+</pre>
+
+<i>Dicas:</i>
+<ul>
+<li>Gerar <b>id</b> automático</li>
+<li>Inicializar <b>concluida</b> como false</li>
+<li><b>dataConclusao</b> undefined inicialmente</li>
+<li>Validar título (>3 caracteres) e responsavelNome não vazio</li>
+</ul>
+</p>
+
+<hr>
+
+<h2>📝 Exercício 8 — Atualizar tarefa</h2>
+<p>
+Endpoint: <b>PUT /tasks/:id</b>
+</p>
+<p>
+Body JSON:
+
+<pre>
+{
+  "titulo": "Estudar Express",
+  "categoria": "trabalho",
+  "responsavelNome": "Daniel Moraes",
+  "concluida": true
+}
+</pre>
+
+<i>Dicas:</i>
+<ul>
+<li>Atualizar todos os campos fornecidos</li>
+<li>Se <b>concluida</b> for true, atualizar <b>dataConclusao</b> para data atual</li>
+<li>Se false, definir <b>dataConclusao</b> como undefined</li>
+</ul>
+</p>
+
+<hr>
+
+<h2>📝 Exercício 9 — Remover tarefa</h2>
+<p>
+Endpoint: <b>DELETE /tasks/:id</b>
+</p>
+<p>
+<i>Dicas:</i>
+<ul>
+<li>Usar <b>filter()</b> para remover do array <b>tasks</b></li>
+<li>Atualizar contadores de tarefas pendentes/concluídas</li>
+</ul>
+</p>
+
+<hr>
+
+<h2>📝 Exercício 10 — Ordenar listas</h2>
+<p>
+Endpoints: <b>GET /users?sort=asc|desc</b>, <b>GET /tasks?sort=asc|desc</b>
+</p>
+<p>
+<i>Dicas:</i>
+<ul>
+<li>Usar <b>sort()</b> no array pelo nome (users) ou título (tasks)</li>
+<li>Manter filtro de pesquisa caso existam query params <b>search</b></li>
+</ul>
+</p>
+
+<hr>
+
+<h2>📝 Exercício 11 — Pesquisa por nome/título</h2>
+<p>
+Endpoints: <b>GET /users?search=nome</b>, <b>GET /tasks?search=titulo</b>
+</p>
+<p>
+<i>Dicas:</i>
+<ul>
+<li>Usar <b>filter()</b> para retornar apenas os itens que contêm o termo pesquisado</li>
+</ul>
+</p>
+
+<hr>
+
+<h2>📝 Exercício 12 — Estatísticas</h2>
+<p>
+Endpoints:
+<ul>
+<li><b>GET /users/stats</b> — retorna total, ativos e percentagem de utilizadores ativos</li>
+<li><b>GET /tasks/stats</b> — retorna total, pendentes e concluídas</li>
+</ul>
+</p>
+<p>
+<i>Dicas:</i>
+<ul>
+<li>Calcular dinamicamente usando <b>filter()</b> e <b>length</b></li>
+<li>Usar services separados para cálculo de estatísticas</li>
+</ul>
+</p>
+
+<h2>📝 Exercício 13 — MiddleWare User</h2>
+<p>
+    Crie o ficheiro middlewares/checkUserExists.js para ser usado em todas as paths de users, e complete o código seguinte:
+<p>
+<i>Dicas:</i>
+
+
+<p>export const checkUserExists = (req, res, next) => {</p>
+ <p> const userId =  — retorna to user dos parametros do endpoint</p>
+  <p>const user = - find o utilizador no array de users</p>
+
+  <p>if (!user) return res.status(404).json({ error: "Utilizador não encontrado" });</p>
+
+  <p>req.user = user;</p>
+  <p>next();</p>
+<p>};</p>
+
+</code>
+</p>
+
+<hr>
+
+<h2>🎯 Objetivos da Aula</h2>
+<p>
+✔ Migrar toda a lógica que estava no front-end para o backend<br>
+✔ Aprender a criar endpoints REST completos para diferentes use cases<br>
+✔ Manipular arrays e relacionamentos simples (users → tasks)<br>
+✔ Implementar métodos HTTP (GET, POST, PUT, DELETE)<br>
+✔ Preparar para adicionar base de dados no futuro
+</p>
+
+</body>
+
+</html>
