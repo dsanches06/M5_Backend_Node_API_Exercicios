@@ -1,0 +1,151 @@
+<html>
+
+<head>
+    <style>
+        body {
+            color: black;
+            font-family: Arial;
+            line-height: 1.6;
+        }
+
+        h1 {
+            color: #006600;
+        }
+
+        h2 {
+            color: #003366;
+        }
+
+        hr {
+            margin: 20px 0;
+        }
+
+        pre {
+            background-color: #f0f0f0;
+            padding: 10px;
+        }
+
+        b {
+            background-color: #f0f0f0;
+            padding: 2px 4px;
+        }
+
+        i {
+            color: #555;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>💡 Exercícios de Backend — Migração para MySQL</h1>
+
+<p>
+📌 <b>Regras gerais:</b><br>
+- Todos os endpoints já existentes devem agora utilizar <b>MySQL</b> para armazenar e recuperar dados.<br>
+- Não usar arrays em memória.  
+- Manter arquitetura <b>services → controllers → routes</b>.<br>
+- Usar <b>async/await</b> e tratamento de erros.
+</p>
+
+<hr>
+
+<h1>Exercícios Guiados (Em Aula)</h1>
+
+<h2>Exercício 1 — Users: Listar todos</h2>
+<p>
+Endpoint: <b>GET /users</b><br>
+<i>Observação:</i> Retornar todos os utilizadores da tabela <b>users</b> no MySQL.
+</p>
+
+<hr>
+
+<h2>Exercício 2 — Users: Criar novo</h2>
+<p>
+Endpoint: <b>POST /users</b><br>
+<i>Observação:</i> Inserir novo utilizador na tabela <b>users</b> e retornar <b>insertId</b>.
+</p>
+
+<hr>
+
+<h2>Exercício 3 — Users: Atualizar</h2>
+<p>
+Endpoint: <b>PUT /users/:id</b><br>
+<i>Observação:</i> Atualizar dados do utilizador no MySQL usando <b>UPDATE</b> e verificar <b>affectedRows</b>.
+</p>
+
+<hr>
+
+<h2>Exercício 4 — Users: Remover</h2>
+<p>
+Endpoint: <b>DELETE /users/:id</b><br>
+<i>Observação:</i> Remover utilizador do MySQL e retornar mensagem apenas se <b>affectedRows > 0</b>.
+</p>
+
+<hr>
+
+<h2>Exercício 5 — Tasks: Listar todas</h2>
+<p>
+Endpoint: <b>GET /tasks</b><br>
+<i>Observação:</i> Selecionar todas as tarefas da tabela <b>tasks</b>.
+</p>
+
+<hr>
+
+<h2>Exercício 6 — Tasks: Criar nova</h2>
+<p>
+Endpoint: <b>POST /tasks</b><br>
+<i>Observação:</i> Inserir nova tarefa no MySQL com referência ao utilizador (<b>user_id</b>) e retornar <b>insertId</b>.
+</p>
+
+<hr>
+
+<h2>Exercício 7 — Tags: Listar</h2>
+<p>
+Endpoint: <b>GET /tags</b><br>
+<i>Observação:</i> Selecionar todas as tags da tabela <b>tags</b>.
+</p>
+
+<hr>
+
+<h2>Exercício 8 — Tags: Criar nova</h2>
+<p>
+Endpoint: <b>POST /tags</b><br>
+<i>Observação:</i> Inserir nova tag na tabela <b>tags</b> e retornar <b>insertId</b>.
+</p>
+
+<hr>
+
+<h2>Exercício 9 — Associar tag a tarefa</h2>
+<p>
+Endpoint: <b>POST /tasks/:id/tags</b><br>
+<i>Observação:</i> Inserir relação na tabela <b>task_tags(task_id, tag_id)</b>. Evitar duplicações.
+</p>
+
+<hr>
+
+<h2>Exercício 10 — Comentários: Criar e listar</h2>
+<p>
+Endpoints: 
+<ul>
+<li><b>POST /tasks/:id/comments</b> — Inserir comentário na tabela <b>comments</b> com referência à tarefa e ao utilizador.</li>
+<li><b>GET /tasks/:id/comments</b> — Listar todos os comentários da tarefa, ordenados por data.</li>
+</ul>
+<i>Observação:</i> Usar <b>INSERT</b> e <b>SELECT</b> adequadamente.
+</p>
+
+<hr>
+
+<h2>🎯 Objetivos destes exercícios</h2>
+
+<p>
+✔ Migrar toda a lógica que estava em memória para MySQL<br>
+✔ Praticar operações CRUD usando banco de dados<br>
+✔ Manter arquitetura controllers / services / routes<br>
+✔ Entender <b>insertId</b> e <b>affectedRows</b><br>
+✔ Trabalhar relações 1:N (comentários → tarefas) e N:N (tags ↔ tarefas)
+</p>
+
+</body>
+
+</html>

@@ -1,39 +1,20 @@
-const express = require("express");
+import express from "express";
+import logger from "./middlewares/loggerMiddleware.js";
+import taskRoutes from "./routes/taskRoutes.js";
+import userRoutes from "./routes/userRoutes.js";
+import tagRoutes from "./routes/tagRoutes.js";
 const PORT = 3000;
+
 const app = express();
 
 app.use(express.json());
+app.use(logger);
 
-app.get("/tasks", (req, res) => {
-  res.status(200).json([
-    {
-      id: 1,
-      title: "Criar Login",
-    },
-    {
-      id: 2,
-      title: "Criar Dashboard",
-    },
-  ]);
-});
-
-app.post("/tasks", (req, res) => {
-  const task = req.body;
-
-  res.status(201).json({
-    mensagem: "Tarefa criada com sucesso",
-    task: task,
-  });
-});
-
-app.get("/tasks/:id", (req, res) => {
-  const id  = req.params.id;
-
-  res.status(200).json({
-    taskId: id,
-  });
-});
+/* router */
+app.use("/users", userRoutes);
+app.use("/tasks", taskRoutes);
+app.use("/tags", tagRoutes);
 
 app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`Server is running on port ${PORT}`);
 });
