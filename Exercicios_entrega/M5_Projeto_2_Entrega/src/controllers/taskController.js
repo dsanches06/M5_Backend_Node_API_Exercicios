@@ -3,26 +3,34 @@ import * as tagService from "../services/tagService.js";
 import * as commentService from "../services/commentService.js";
 
 /* Função para buscar tarefas */
-export const getTasks = (req, res) => {
-  const { sort, search } = req.query;
-  const tasks = taskService.getAllTasks(search, sort);
-  res.json(tasks);
+export const getTasks = async (req, res) => {
+  try {
+    const { sort, search } = req.query;
+    const tasks = await taskService.getAllTasks(search, sort);
+    res.json(tasks);
+  } catch (error) {
+    res.status(500).json({ error: `Erro ao buscar tarefas: ${error.message}` });
+  }
 };
 
 /* Função para criar tarefa */
-export const createTask = (req, res) => {
+export const createTask = async (req, res) => {
   try {
-    const { titulo, responsavel } = req.body;
+    const { title, userId } = req.body;
 
-    if (!titulo || titulo.length <= 3) {
-       res.status(400).json({ error: "O título deve ter mais de 3 caracteres" });
+    if (!title || title.length <= 3) {
+      return res
+        .status(400)
+        .json({ error: "O título deve ter mais de 3 caracteres" });
     }
 
-    if (!responsavel) {
-      return res.status(400).json({ error: "O nome do responsável não pode estar vazio" });
+    if (!userId) {
+      return res
+        .status(400)
+        .json({ error: "O ID do usuário não pode estar vazio" });
     }
 
-    const task = taskService.createTask(req.body);
+    const task = await taskService.createTask(req.body);
     res.status(201).json(task);
   } catch (error) {
     res.status(400).json({ error: `Erro ao criar tarefa: ${error.message}` });
@@ -30,29 +38,37 @@ export const createTask = (req, res) => {
 };
 
 /* Função para atualizar tarefa */
-export const updateTask = (req, res) => {
+export const updateTask = async (req, res) => {
   try {
-    const { titulo, responsavel } = req.body;
+    const { title, userId, completed } = req.body;
 
-    if (titulo !== undefined && titulo.length <= 3) {
-       res.status(400).json({ error: "O título deve ter mais de 3 caracteres" });
+    if (title !== undefined && title.length <= 3) {
+      return res
+        .status(400)
+        .json({ error: "O título deve ter mais de 3 caracteres" });
     }
 
-    if (responsavel !== undefined && !responsavel) {
-       res.status(400).json({ error: "O nome do responsável não pode estar vazio" });
+    if (userId !== undefined && !userId) {
+      return res
+        .status(400)
+        .json({ error: "O ID do usuário não pode estar vazio" });
     }
 
-    const task = taskService.updateTask(Number(req.params.id), req.body);
+    req.body.completedDate = completed === true ? new Date().toISOString() : undefined;
+
+    const task = await taskService.updateTask(Number(req.params.id), req.body);
     res.json(task);
   } catch (error) {
-    res.status(400).json({ error: `Erro ao atualizar tarefa: ${error.message}` });
+    res
+      .status(400)
+      .json({ error: `Erro ao atualizar tarefa: ${error.message}` });
   }
 };
 
 /* Função para deletar tarefa */
-export const deleteTask = (req, res) => {
+export const deleteTask = async (req, res) => {
   try {
-    taskService.deleteTask(Number(req.params.id));
+    await taskService.deleteTask(Number(req.params.id));
     res.status(200).json({ message: "Tarefa deletada com sucesso" });
   } catch (error) {
     res.status(404).json({ error: `Erro ao deletar tarefa: ${error.message}` });
@@ -60,13 +76,19 @@ export const deleteTask = (req, res) => {
 };
 
 /* Função para buscar estatísticas das tarefas */
-export const getStats = (req, res) => {
-  const stats = taskService.getTaskStats();
-  res.json(stats);
+export const getStats = async (req, res) => {
+  try {
+    const stats = await taskService.getTaskStats();
+    res.json(stats);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: `Erro ao buscar estatísticas: ${error.message}` });
+  }
 };
 
-/* Função para adicionar tag à tarefa */
-export const addTagToTask = (req, res) => {
+/* Função para adicionar etiqueta à tarefa */
+export const addTagToTask = async (req, res) => {
   try {
     const taskId = Number(req.params.id);
     const tagId = Number(req.body.tagId);
@@ -75,82 +97,148 @@ export const addTagToTask = (req, res) => {
       return res.status(400).json({ error: "tagId is required" });
     }
 
-    const tag = tagService.getTagById(tagId);
+    const tag = await tagService.getTagById(tagId);
     if (!tag) {
-      return res.status(404).json({ error: "Tag não encontrada" });
+      return res.status(404).json({ error: "Etiqueta não encontrada" });
     }
 
-    const relation = taskService.addTagToTask(taskId, tagId);
+    const relation = await taskService.addTagToTask(taskId, tagId);
     res.status(201).json(relation);
   } catch (error) {
-    res.status(400).json({ error: `Erro ao adicionar tag à tarefa: ${error.message}` });
+    res
+      .status(400)
+      .json({ error: `Erro ao adicionar etiqueta à tarefa: ${error.message}` });
   }
 };
 
-/* Função para remover tag da tarefa */
-export const removeTagFromTask = (req, res) => {
+/* Função para remover etiqueta da tarefa */
+export const removeTagFromTask = async (req, res) => {
   try {
     const taskId = Number(req.params.id);
-    const tagId = Number(req.body.tagId);
+    const tagId = Number(req.params.tagId);
 
     if (!tagId) {
-      return res.status(400).json({ error: "O ID da tag é obrigatório" });
+      return res.status(400).json({ error: "O ID da etiqueta é obrigatório" });
     }
 
-    const relation = taskService.removeTagFromTask(taskId, tagId);
-    res.status(200).json({ message: "Tag removida da tarefa com sucesso", relation });
+    const relation = await taskService.removeTagFromTask(taskId, tagId);
+    res
+      .status(200)
+      .json({ message: "Etiqueta removida da tarefa com sucesso", relation });
   } catch (error) {
-    res.status(400).json({ error: `Erro ao remover tag da tarefa: ${error.message}` });
+    res
+      .status(400)
+      .json({ error: `Erro ao remover etiqueta da tarefa: ${error.message}` });
   }
 };
 
-/* Função para buscar tags da tarefa */
-export const getTaskTags = (req, res) => {
+/* Função para buscar etiquetas da tarefa */
+export const getTaskTags = async (req, res) => {
   try {
     const taskId = Number(req.params.id);
-    const tags = taskService.getTagsByTaskId(taskId);
+    const tags = await taskService.getTagsByTaskId(taskId);
 
-    const tagDetails = tags.map((relation) => tagService.getTagById(relation.tagId));
+    const tagDetails = await Promise.all(
+      tags.map((relation) => tagService.getTagById(relation.id_etiqueta)),
+    );
     res.json(tagDetails);
   } catch (error) {
-    res.status(500).json({ error: `Erro ao buscar tags da tarefa: ${error.message}` });
+    res
+      .status(500)
+      .json({ error: `Erro ao buscar etiquetas da tarefa: ${error.message}` });
   }
 };
 
 /* Função para criar comentário */
-export const createComment = (req, res) => {
+export const createComment = async (req, res) => {
   try {
     const taskId = Number(req.params.id);
-    
-    if (!req.body.conteudo || req.body.conteudo.trim().length === 0) {
-      return res.status(400).json({ error: "O conteúdo do comentário não pode estar vazio" });
+
+    if (!req.body.content || req.body.content.trim().length === 0) {
+      return res
+        .status(400)
+        .json({ error: "O conteúdo do comentário não pode estar vazio" });
     }
-    
-    const comment = commentService.createComment(taskId, req.body);
+
+    if (!req.body.userId) {
+      return res.status(400).json({ error: "userId é obrigatório" });
+    }
+
+    const comment = await commentService.createComment(taskId, req.body);
     res.status(201).json(comment);
   } catch (error) {
-    res.status(400).json({ error: `Erro ao criar comentário: ${error.message}` });
+    res
+      .status(400)
+      .json({ error: `Erro ao criar comentário: ${error.message}` });
   }
 };
 
 /* Função para buscar comentários */
-export const getComments = (req, res) => {
+export const getComments = async (req, res) => {
   try {
     const taskId = Number(req.params.id);
-    const comments = commentService.getCommentsByTaskId(taskId);
+    const comments = await commentService.getCommentsByTaskId(taskId);
     res.json(comments);
   } catch (error) {
-    res.status(500).json({ error: `Erro ao buscar comentários: ${error.message}` });
+    res
+      .status(500)
+      .json({ error: `Erro ao buscar comentários: ${error.message}` });
   }
 };
 
 /* Função para deletar comentário */
-export const deleteComment = (req, res) => {
+export const deleteComment = async (req, res) => {
   try {
     const commentId = Number(req.params.commentId);
-    const comment = commentService.deleteComment(commentId);
+    const comment = await commentService.deleteComment(commentId);
     res.json({ message: "Comentário deletado com sucesso", comment });
   } catch (error) {
-    res.status(404).json({ error: `Erro ao deletar comentário: ${error.message}` });
+    res
+      .status(404)
+      .json({ error: `Erro ao deletar comentário: ${error.message}` });
+  }
+};
+
+/* Função para marcar comentário como resolvido */
+export const resolveComment = async (req, res) => {
+  try {
+    const { commentId } = req.params;
+    let { resolved } = req.body;
+
+    if (!commentId) {
+      return res
+        .status(400)
+        .json({ error: "O ID do comentário é obrigatório" });
+    }
+
+    if (resolved === undefined || resolved === null) {
+      return res
+        .status(400)
+        .json({ error: "O campo 'resolved' é obrigatório" });
+    }
+
+    // Convert various formats to boolean
+    if (typeof resolved === "string") {
+      resolved = resolved.toLowerCase() === "true" || resolved === "1";
+    } else if (typeof resolved === "number") {
+      resolved = Boolean(resolved);
+    } else if (typeof resolved !== "boolean") {
+      return res
+        .status(400)
+        .json({ error: "O campo 'resolved' deve ser um booleano válido" });
+    }
+
+    const comment = await commentService.resolveComment(
+      Number(commentId),
+      resolved,
+    );
+    res.json({
+      message: `Comentário marcado como ${resolved ? "resolvido" : "não resolvido"}`,
+      comment,
+    });
+  } catch (error) {
+    res
+      .status(400)
+      .json({ error: `Erro ao resolver comentário: ${error.message}` });
   }
 };
