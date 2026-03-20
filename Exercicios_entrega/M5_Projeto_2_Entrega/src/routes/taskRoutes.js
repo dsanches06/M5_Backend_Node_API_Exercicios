@@ -18,7 +18,8 @@ router.get("/:id/tags", taskController.getTaskTags);
 // Comments routes
 router.post("/:id/comments", taskController.createComment);
 router.get("/:id/comments", taskController.getComments);
+router.patch("/:id/comments/:commentId", taskController.resolveComment);
+router.put("/:id/comments/:commentId", taskController.updateComment);
 router.delete("/:id/comments/:commentId", taskController.deleteComment);
-router.put("/:id/comments/:commentId", taskController.resolveComment);
 
 export default router;

@@ -162,8 +162,8 @@ Write-Host "║   3. TESTES DE COMENTÁRIOS E TAGS      ║" -ForegroundColor Cy
 Write-Host "╚════════════════════════════════════════╝" -ForegroundColor Cyan
 Write-Host ""
 
-# TEST 9: GET /tasks/:id/comments
-Write-Host "TEST 9: GET /tasks/:id/comments" -ForegroundColor Yellow
+# TEST 8: GET /tasks/:id/comments
+Write-Host "TEST 8: GET /tasks/:id/comments" -ForegroundColor Yellow
 $testsTotal++
 try {
     $response = Invoke-WebRequest -Uri "http://localhost:3000/tasks/1/comments" -Method GET
@@ -177,8 +177,8 @@ try {
 
 Write-Host ""
 
-# TEST 10: POST /tasks/:id/comments
-Write-Host "TEST 10: POST /tasks/:id/comments" -ForegroundColor Yellow
+# TEST 9: POST /tasks/:id/comments
+Write-Host "TEST 9: POST /tasks/:id/comments" -ForegroundColor Yellow
 $testsTotal++
 try {
     $body = @{
@@ -202,8 +202,8 @@ try {
 
 Write-Host ""
 
-# TEST 11: DELETE /tasks/:id/comments/:commentId
-Write-Host "TEST 11: DELETE /tasks/:id/comments/:commentId" -ForegroundColor Yellow
+# TEST 10: DELETE /tasks/:id/comments/:commentId
+Write-Host "TEST 10: DELETE /tasks/:id/comments/:commentId" -ForegroundColor Yellow
 $testsTotal++
 if ($null -ne $commentId) {
     try {
@@ -221,8 +221,8 @@ if ($null -ne $commentId) {
 
 Write-Host ""
 
-# TEST 12: PUT /tasks/:id/comments/:commentId (Marcar como resolvido)
-Write-Host "TEST 12: PUT /tasks/:id/comments/:commentId (Marcar como resolvido)" -ForegroundColor Yellow
+# TEST 11: PATCH /tasks/:id/comments/:commentId (Marcar como resolvido)
+Write-Host "TEST 11: PATCH /tasks/:id/comments/:commentId (Marcar como resolvido)" -ForegroundColor Yellow
 $testsTotal++
 try {
     # Primeiro cria um comentário
@@ -239,13 +239,13 @@ try {
     
     $commentForResolve = $response.Content | ConvertFrom-Json
     
-    # Agora marca como resolvido
+    # Agora marca como resolvido usando PATCH
     $bodyResolve = @{
         resolved = $true
     } | ConvertTo-Json
     
     $response = Invoke-WebRequest -Uri "http://localhost:3000/tasks/3/comments/$($commentForResolve.id)" `
-        -Method PUT `
+        -Method PATCH `
         -Headers @{"Content-Type"="application/json"} `
         -Body $bodyResolve `
         -ErrorAction Stop
@@ -258,21 +258,35 @@ try {
 
 Write-Host ""
 
-# TEST 13: POST /tasks/:id/tags
-Write-Host "TEST 13: POST /tasks/:id/tags (Adicionar Tag)" -ForegroundColor Yellow
+# TEST 12: POST /tasks/:id/tags (Adicionar Tag)
+Write-Host "TEST 12: POST /tasks/:id/tags (Adicionar Tag)" -ForegroundColor Yellow
 $testsTotal++
 try {
-    $randomTag = Get-Random -Minimum 1 -Maximum 6
-    $body = @{
-        tagId = $randomTag
+    # Criar uma nova tag e depois associá-la para garantir sucesso
+    $tagBody = @{
+        nome = "Tag Teste Associação $((Get-Random))"
     } | ConvertTo-Json
     
-    $response = Invoke-WebRequest -Uri "http://localhost:3000/tasks/4/tags" `
+    $tagResponse = Invoke-WebRequest -Uri "http://localhost:3000/tags" `
+        -Method POST `
+        -Headers @{"Content-Type"="application/json"} `
+        -Body $tagBody `
+        -ErrorAction Stop
+    
+    $newTag = $tagResponse.Content | ConvertFrom-Json
+    
+    # Agora associa a tag à tarefa
+    $body = @{
+        tagId = $newTag.id
+    } | ConvertTo-Json
+    
+    $response = Invoke-WebRequest -Uri "http://localhost:3000/tasks/5/tags" `
         -Method POST `
         -Headers @{"Content-Type"="application/json"} `
         -Body $body `
         -ErrorAction Stop
     Write-Host "✓ Status: $($response.StatusCode)" -ForegroundColor Green
+    Write-Host "  Tag ID: $($newTag.id) associada à tarefa 5" -ForegroundColor Cyan
     $testsPassed++
 } catch {
     Write-Host "✗ Erro: $($_.Exception.Message)" -ForegroundColor Red
@@ -280,8 +294,8 @@ try {
 
 Write-Host ""
 
-# TEST 14: GET /tasks/:id/tags
-Write-Host "TEST 14: GET /tasks/:id/tags" -ForegroundColor Yellow
+# TEST 13: GET /tasks/:id/tags
+Write-Host "TEST 13: GET /tasks/:id/tags" -ForegroundColor Yellow
 $testsTotal++
 try {
     $response = Invoke-WebRequest -Uri "http://localhost:3000/tasks/3/tags" -Method GET
@@ -295,8 +309,8 @@ try {
 
 Write-Host ""
 
-# TEST 15: DELETE /tasks/:id/tags/:tagId (Remover Tag)
-Write-Host "TEST 15: DELETE /tasks/:id/tags/:tagId (Remover Tag)" -ForegroundColor Yellow
+# TEST 14: DELETE /tasks/:id/tags/:tagId (Remover Tag)
+Write-Host "TEST 14: DELETE /tasks/:id/tags/:tagId (Remover Tag)" -ForegroundColor Yellow
 $testsTotal++
 try {
     $response = Invoke-WebRequest -Uri "http://localhost:3000/tasks/5/tags/1" `
@@ -311,8 +325,8 @@ try {
 
 Write-Host ""
 
-# TEST 16: GET /tags
-Write-Host "TEST 16: GET /tags" -ForegroundColor Yellow
+# TEST 15: GET /tags
+Write-Host "TEST 15: GET /tags" -ForegroundColor Yellow
 $testsTotal++
 try {
     $response = Invoke-WebRequest -Uri "http://localhost:3000/tags" -Method GET
@@ -326,8 +340,8 @@ try {
 
 Write-Host ""
 
-# TEST 17: POST /tags (Criar Tag)
-Write-Host "TEST 17: POST /tags (Criar Tag)" -ForegroundColor Yellow
+# TEST 16: POST /tags (Criar Tag)
+Write-Host "TEST 16: POST /tags (Criar Tag)" -ForegroundColor Yellow
 $testsTotal++
 try {
     $body = @{
@@ -350,8 +364,8 @@ try {
 
 Write-Host ""
 
-# TEST 18: DELETE /tags/:id (Remover Tag)
-Write-Host "TEST 18: DELETE /tags/:id (Remover Tag)" -ForegroundColor Yellow
+# TEST 17: DELETE /tags/:id (Remover Tag)
+Write-Host "TEST 17: DELETE /tags/:id (Remover Tag)" -ForegroundColor Yellow
 $testsTotal++
 if ($null -ne $newTagId) {
     try {
