@@ -24,6 +24,11 @@ export const createUser = async (req, res) => {
       return res.status(400).json({ message: "Email inválido" });
     }
 
+    const emailAlreadyExists = await userService.emailExists(email);
+    if (emailAlreadyExists) {
+      return res.status(400).json({ message: "Este email já está registrado" });
+    }
+
     const user = await userService.createUser(req.body);
     res.status(201).json(user);
   } catch (error) {
@@ -47,6 +52,13 @@ export const updateUser = async (req, res) => {
 
     if (email !== undefined && (email.length === 0 || !email.includes("@"))) {
       return res.status(400).json({ message: "Email inválido" });
+    }
+
+    if (email !== undefined) {
+      const emailAlreadyExists = await userService.emailExists(email, Number(userId));
+      if (emailAlreadyExists) {
+        return res.status(400).json({ message: "Este email já está registrado por outro utilizador" });
+      }
     }
 
     const affectedRows = await userService.updateUser(Number(userId), req.body);

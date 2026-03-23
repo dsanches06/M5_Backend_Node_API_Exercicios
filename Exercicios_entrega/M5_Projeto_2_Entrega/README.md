@@ -181,21 +181,19 @@ curl "http://localhost:3000/tasks?search=API&sort=asc"
 
 ## 🧪 Testando a API
 
-### Com cURL
+### Com PowerShell (Recomendado)
 
-Use os exemplos fornecidos em cada seção de rotas.
-
-### Com PowerShell
-
-Execute o script de testes automatizados:
+Execute o script de testes automatizados que testa todos os endpoints:
 
 ```powershell
-.\test-api-full.ps1
+powershell -ExecutionPolicy Bypass -File test-api-full.ps1
 ```
+
+Este script realiza 23 testes completos cobrindo todas as operações CRUD e endpoints principais da API.
 
 ### Com Postman ou Insomnia
 
-Importe as URLs das rotas listadas acima e faça as requisições.
+Importe as URLs das rotas listadas na seção "📡 Documentação das Rotas" e faça as requisições manualmente.
 
 ## 🔍 Status HTTP
 
@@ -209,19 +207,43 @@ Importe as URLs das rotas listadas acima e faça as requisições.
 
 ## ✅ Testes Realizados
 
-- ✅ POST /tasks/1/tags - Adicionar tag (201)
-- ✅ GET /tasks/1/tags - Buscar tags (200)
-- ✅ DELETE /tasks/1/tags - Remover tag (200)
-- ✅ POST /tasks/1/comments - Criar comentário (201)
-- ✅ GET /tasks/1/comments - Buscar comentários (200)
-- ✅ DELETE /tasks/1/comments/:commentId - Deletar comentário (200)
+O script `test-api-full.ps1` executa **23 testes completos** cobrindo toda a API:
+
+### Testes de GET (Listagem)
+1. ✅ GET /tasks - Listar todas as tarefas
+2. ✅ GET /users - Listar todos os utilizadores
+3. ✅ GET /tags - Listar todas as tags
+4. ✅ GET /users/stats - Estatísticas de utilizadores
+5. ✅ GET /tasks/stats - Estatísticas de tarefas
+
+### Testes de POST (Criação)
+6. ✅ POST /users - Criar novo utilizador
+7. ✅ POST /tags - Criar nova tag
+8. ✅ POST /tasks - Criar nova tarefa
+9. ✅ POST /tasks/:id/tags - Adicionar tag à tarefa
+10. ✅ POST /tasks/:id/comments - Criar comentário
+
+### Testes de PUT (Atualização)
+11. ✅ PUT /users/:id - Atualizar utilizador
+12. ✅ PUT /tasks/:id - Atualizar tarefa
+13. ✅ PUT /tasks/:id/comments/:commentId - Atualizar comentário
+
+### Testes de PATCH (Modificação Parcial)
+14. ✅ PATCH /users/:id - Alternar status ativo/inativo
+15. ✅ PATCH /tasks/:id/comments/:commentId - Marcar comentário como resolvido
+
+### Testes de DELETE (Remoção)
+16. ✅ DELETE /tasks/:id/tags/:tagId - Remover tag da tarefa
+17. ✅ DELETE /tasks/:id/comments/:commentId - Deletar comentário
+18. ✅ DELETE /tasks/:id - Deletar tarefa
+19. ✅ DELETE /tags/:id - Deletar tag
+20. ✅ DELETE /users/:id - Deletar utilizador (com validação de FK)
+
+### Testes de GET com Relacionamentos
+21. ✅ GET /tasks/:id/tags - Buscar tags de uma tarefa
+22. ✅ GET /tasks/:id/comments - Buscar comentários de uma tarefa
+23. ✅ GET /tags/:id/tasks - Buscar tarefas com uma tag
 
 ## 👨‍💻 Autor
 
 Desenvolvido por **Danilson Sanches** @upskill217
-
-## 📚 Referências
-
-- [Documentação completa de testes](./TESTES_API.md)
-- [Express.js Documentation](https://expressjs.com)
-- [MySQL Documentation](https://dev.mysql.com/doc/)

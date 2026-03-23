@@ -7,19 +7,21 @@ const router = express.Router();
 router.get("/", taskController.getTasks);
 router.get("/stats", taskController.getStats);
 router.post("/", taskController.createTask);
-router.put("/:id", taskController.updateTask);
-router.delete("/:id", taskController.deleteTask);
 
-// Tags routes
+// Tags routes (must come before /:id routes)
 router.post("/:id/tags", taskController.addTagToTask);
 router.delete("/:id/tags/:tagId", taskController.removeTagFromTask);
 router.get("/:id/tags", taskController.getTaskTags);
 
-// Comments routes
+// Comments routes (must come before /:id routes)
 router.post("/:id/comments", taskController.createComment);
 router.get("/:id/comments", taskController.getComments);
 router.patch("/:id/comments/:commentId", taskController.resolveComment);
 router.put("/:id/comments/:commentId", taskController.updateComment);
 router.delete("/:id/comments/:commentId", taskController.deleteComment);
+
+// Generic task routes (must come last to avoid matching specific routes)
+router.put("/:id", taskController.updateTask);
+router.delete("/:id", taskController.deleteTask);
 
 export default router;

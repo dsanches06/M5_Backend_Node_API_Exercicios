@@ -24,6 +24,11 @@ export const createTag = async (req, res) => {
       return res.status(400).json({ message: "O nome da etiqueta deve ter no mínimo 2 caracteres" });
     }
 
+    const tagExists = await tagService.tagNameExists(nome.trim());
+    if (tagExists) {
+      return res.status(400).json({ message: "Já existe uma etiqueta com este nome" });
+    }
+
     const tag = await tagService.createTag(req.body);
     res.status(201).json(tag);
   } catch (error) {

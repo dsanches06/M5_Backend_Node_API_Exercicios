@@ -238,6 +238,8 @@ export const resolveComment = async (req, res) => {
 /* Função para atualizar comentário */
 export const updateComment = async (req, res) => {
   try {
+    console.log("[DEBUG] updateComment called with params:", req.params);
+    console.log("[DEBUG] updateComment body:", req.body);
     const { commentId } = req.params;
     const { content } = req.body;
     if (!commentId) {
@@ -257,6 +259,7 @@ export const updateComment = async (req, res) => {
     );
     res.json({ message: "Comentário atualizado com sucesso", comment });
   } catch (error) {
+    console.error("[DEBUG] updateComment error:", error.message);
     res
       .status(400)
       .json({ message: `Erro ao atualizar comentário: ${error.message}` });
