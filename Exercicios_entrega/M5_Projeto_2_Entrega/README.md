@@ -189,7 +189,7 @@ Execute o script de testes automatizados que testa todos os endpoints:
 powershell -ExecutionPolicy Bypass -File test-api-full.ps1
 ```
 
-Este script realiza 23 testes completos cobrindo todas as operações CRUD e endpoints principais da API.
+Este script realiza 25 testes completos cobrindo todas as operações CRUD, validações e endpoints principais da API.
 
 ### Com Postman ou Insomnia
 
@@ -207,7 +207,7 @@ Importe as URLs das rotas listadas na seção "📡 Documentação das Rotas" e 
 
 ## ✅ Testes Realizados
 
-O script `test-api-full.ps1` executa **23 testes completos** cobrindo toda a API:
+O script `test-api-full.ps1` executa **25 testes completos** cobrindo toda a API:
 
 ### Testes de GET (Listagem)
 1. ✅ GET /tasks - Listar todas as tarefas
@@ -223,26 +223,30 @@ O script `test-api-full.ps1` executa **23 testes completos** cobrindo toda a API
 9. ✅ POST /tasks/:id/tags - Adicionar tag à tarefa
 10. ✅ POST /tasks/:id/comments - Criar comentário
 
+### Testes de Validação
+11. ✅ POST /users (duplicate email) - Validar rejeição de emails duplicados
+12. ✅ POST /tags (duplicate name) - Validar rejeição de nomes de tags duplicados
+
 ### Testes de PUT (Atualização)
-11. ✅ PUT /users/:id - Atualizar utilizador
-12. ✅ PUT /tasks/:id - Atualizar tarefa
-13. ✅ PUT /tasks/:id/comments/:commentId - Atualizar comentário
+13. ✅ PUT /users/:id - Atualizar utilizador
+14. ✅ PUT /tasks/:id - Atualizar tarefa
+15. ✅ PUT /tasks/:id/comments/:commentId - Atualizar comentário
 
 ### Testes de PATCH (Modificação Parcial)
-14. ✅ PATCH /users/:id - Alternar status ativo/inativo
-15. ✅ PATCH /tasks/:id/comments/:commentId - Marcar comentário como resolvido
+16. ✅ PATCH /users/:id - Alternar status ativo/inativo
+17. ✅ PATCH /tasks/:id/comments/:commentId - Marcar comentário como resolvido
 
 ### Testes de DELETE (Remoção)
-16. ✅ DELETE /tasks/:id/tags/:tagId - Remover tag da tarefa
-17. ✅ DELETE /tasks/:id/comments/:commentId - Deletar comentário
-18. ✅ DELETE /tasks/:id - Deletar tarefa
-19. ✅ DELETE /tags/:id - Deletar tag
-20. ✅ DELETE /users/:id - Deletar utilizador (com validação de FK)
+18. ✅ DELETE /tasks/:id/tags/:tagId - Remover tag da tarefa
+19. ✅ DELETE /tasks/:id/comments/:commentId - Deletar comentário
+20. ✅ DELETE /tasks/:id - Deletar tarefa
+21. ✅ DELETE /tags/:id - Deletar tag
+22. ✅ DELETE /users/:id - Deletar utilizador (com validação de FK)
 
 ### Testes de GET com Relacionamentos
-21. ✅ GET /tasks/:id/tags - Buscar tags de uma tarefa
-22. ✅ GET /tasks/:id/comments - Buscar comentários de uma tarefa
-23. ✅ GET /tags/:id/tasks - Buscar tarefas com uma tag
+23. ✅ GET /tasks/:id/tags - Buscar tags de uma tarefa
+24. ✅ GET /tasks/:id/comments - Buscar comentários de uma tarefa
+25. ✅ GET /tags/:id/tasks - Buscar tarefas com uma tag
 
 ## 👨‍💻 Autor
 

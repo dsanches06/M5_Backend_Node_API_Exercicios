@@ -28,6 +28,12 @@ export const getAllUsers = async (search, sort) => {
   return users;
 };
 
+/* Função para buscar utilizador por ID */
+export const getUserById = async (userId) => {
+  const [users] = await db.query("SELECT * FROM utilizador WHERE id = ?", [userId]);
+  return users[0] || null;
+};
+
 /* Função para criar utilizador */
 export const createUser = async (data) => {
   const [result] = await db.query(
@@ -128,6 +134,8 @@ export const getUserStats = async () => {
   return {
     totalUsers,
     activeUsers,
+    inactiveUsers,
     activePercentage: activePercentage + "%",
+    inactivePercentage: inactivePercentage + "%",
   };
 };

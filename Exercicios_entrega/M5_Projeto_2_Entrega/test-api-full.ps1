@@ -125,8 +125,118 @@ try {
 
 Write-Host ""
 
-# TEST 6: GET /users/stats
-Write-Host "TEST 6: GET /users/stats" -ForegroundColor Yellow
+# TEST 6: POST /users with duplicate email (validation test)
+Write-Host "TEST 6: POST /users (duplicate email - should fail)" -ForegroundColor Yellow
+$testsTotal++
+try {
+    if ($userId) {
+        # First, get the email from the created user to test duplicate
+        $getUserResponse = Invoke-WebRequest -Uri "http://localhost:3000/users" -Method GET -ErrorAction Stop
+        $users = $getUserResponse.Content | ConvertFrom-Json
+        $existingUser = $users | Where-Object { $_.id -eq $userId } | Select-Object -First 1
+        
+        if ($existingUser -and $existingUser.email) {
+            $body = @{
+                nome = "Duplicate Email Test"
+                email = $existingUser.email
+                telefone = "123456789"
+            } | ConvertTo-Json
+            
+            Write-Host "  [HEADERS]" -ForegroundColor Cyan
+            Write-Host "    Method: POST" -ForegroundColor Gray
+            Write-Host "    URI: http://localhost:3000/users" -ForegroundColor Gray
+            Write-Host "    Content-Type: application/json" -ForegroundColor Gray
+            Write-Host "  [REQUEST BODY]" -ForegroundColor Cyan
+            Write-Host $body -ForegroundColor Gray
+            Write-Host "  [EXPECTED] 400 Bad Request (email already exists)" -ForegroundColor Yellow
+            
+            try {
+                $response = Invoke-WebRequest -Uri "http://localhost:3000/users" -Method POST -Headers @{"Content-Type"="application/json"} -Body $body -ErrorAction Stop
+                Write-Host "  [ERROR] Should have failed but succeeded!" -ForegroundColor Red
+            } catch {
+                $statusCode = $_.Exception.Response.StatusCode.Value__
+                if ($statusCode -eq 400) {
+                    Write-Host "  [STATUS] $statusCode Bad Request" -ForegroundColor Green
+                    try {
+                        $errorJson = $_.Exception.Response.Content.ReadAsStream() | ConvertFrom-Json
+                        Write-Host "  [RESPONSE JSON]" -ForegroundColor Cyan
+                        Write-Host ($errorJson | ConvertTo-Json -Depth 2) -ForegroundColor Gray
+                    } catch {
+                        Write-Host "  [ERROR MESSAGE] Este email já está registrado" -ForegroundColor Gray
+                    }
+                    $testsPassed++
+                } else {
+                    Write-Host "  [ERROR] Unexpected status code: $statusCode" -ForegroundColor Red
+                }
+            }
+        } else {
+            Write-Host "  [ERROR] Could not find created user email" -ForegroundColor Red
+        }
+    } else {
+        Write-Host "  [ERROR] No user ID available" -ForegroundColor Red
+    }
+} catch {
+    Write-Host "  [ERROR] $($_.Exception.Message)" -ForegroundColor Red
+}
+
+Write-Host ""
+
+# TEST 7: POST /tags with duplicate name (validation test)
+Write-Host "TEST 7: POST /tags (duplicate name - should fail)" -ForegroundColor Yellow
+$testsTotal++
+try {
+    if ($tagId) {
+        # Get the tag name from the created tag to test duplicate
+        $getTagResponse = Invoke-WebRequest -Uri "http://localhost:3000/tags" -Method GET -ErrorAction Stop
+        $tags = $getTagResponse.Content | ConvertFrom-Json
+        $existingTag = $tags | Where-Object { $_.id -eq $tagId } | Select-Object -First 1
+        
+        if ($existingTag -and $existingTag.nome) {
+            $body = @{
+                nome = $existingTag.nome
+            } | ConvertTo-Json
+            
+            Write-Host "  [HEADERS]" -ForegroundColor Cyan
+            Write-Host "    Method: POST" -ForegroundColor Gray
+            Write-Host "    URI: http://localhost:3000/tags" -ForegroundColor Gray
+            Write-Host "    Content-Type: application/json" -ForegroundColor Gray
+            Write-Host "  [REQUEST BODY]" -ForegroundColor Cyan
+            Write-Host $body -ForegroundColor Gray
+            Write-Host "  [EXPECTED] 400 Bad Request (tag name already exists)" -ForegroundColor Yellow
+            
+            try {
+                $response = Invoke-WebRequest -Uri "http://localhost:3000/tags" -Method POST -Headers @{"Content-Type"="application/json"} -Body $body -ErrorAction Stop
+                Write-Host "  [ERROR] Should have failed but succeeded!" -ForegroundColor Red
+            } catch {
+                $statusCode = $_.Exception.Response.StatusCode.Value__
+                if ($statusCode -eq 400) {
+                    Write-Host "  [STATUS] $statusCode Bad Request" -ForegroundColor Green
+                    try {
+                        $errorJson = $_.Exception.Response.Content.ReadAsStream() | ConvertFrom-Json
+                        Write-Host "  [RESPONSE JSON]" -ForegroundColor Cyan
+                        Write-Host ($errorJson | ConvertTo-Json -Depth 2) -ForegroundColor Gray
+                    } catch {
+                        Write-Host "  [ERROR MESSAGE] Já existe uma etiqueta com este nome" -ForegroundColor Gray
+                    }
+                    $testsPassed++
+                } else {
+                    Write-Host "  [ERROR] Unexpected status code: $statusCode" -ForegroundColor Red
+                }
+            }
+        } else {
+            Write-Host "  [ERROR] Could not find created tag name" -ForegroundColor Red
+        }
+    } else {
+        Write-Host "  [ERROR] No tag ID available" -ForegroundColor Red
+    }
+} catch {
+    Write-Host "  [ERROR] $($_.Exception.Message)" -ForegroundColor Red
+}
+
+Write-Host ""
+
+# TEST 8: GET /users/stats
+Write-Host "TEST 8: GET /users/stats" -ForegroundColor Yellow
 $testsTotal++
 try {
     Write-Host "  [HEADERS]" -ForegroundColor Cyan
@@ -144,8 +254,8 @@ try {
 
 Write-Host ""
 
-# TEST 7: GET /tasks/stats
-Write-Host "TEST 7: GET /tasks/stats" -ForegroundColor Yellow
+# TEST 9: GET /tasks/stats
+Write-Host "TEST 9: GET /tasks/stats" -ForegroundColor Yellow
 $testsTotal++
 try {
     Write-Host "  [HEADERS]" -ForegroundColor Cyan
@@ -163,8 +273,8 @@ try {
 
 Write-Host ""
 
-# TEST 8: POST /tasks
-Write-Host "TEST 8: POST /tasks" -ForegroundColor Yellow
+# TEST 10: POST /tasks
+Write-Host "TEST 10: POST /tasks" -ForegroundColor Yellow
 $testsTotal++
 $taskId = $null
 try {
@@ -202,8 +312,8 @@ try {
 
 Write-Host ""
 
-# TEST 9: PUT /users/:id
-Write-Host "TEST 9: PUT /users/:id" -ForegroundColor Yellow
+# TEST 11: PUT /users/:id
+Write-Host "TEST 11: PUT /users/:id" -ForegroundColor Yellow
 $testsTotal++
 try {
     if ($userId) {
@@ -235,8 +345,8 @@ try {
 
 Write-Host ""
 
-# TEST 10: PATCH /users/:id (toggle active status)
-Write-Host "TEST 10: PATCH /users/:id (toggle active)" -ForegroundColor Yellow
+# TEST 12: PATCH /users/:id (toggle active status)
+Write-Host "TEST 12: PATCH /users/:id (toggle active)" -ForegroundColor Yellow
 $testsTotal++
 try {
     if ($userId) {
@@ -266,8 +376,8 @@ try {
 
 Write-Host ""
 
-# TEST 11: PUT /tasks/:id
-Write-Host "TEST 11: PUT /tasks/:id" -ForegroundColor Yellow
+# TEST 13: PUT /tasks/:id
+Write-Host "TEST 13: PUT /tasks/:id" -ForegroundColor Yellow
 $testsTotal++
 try {
     if ($taskId) {
@@ -303,8 +413,8 @@ try {
 
 Write-Host ""
 
-# TEST 12: POST /tasks/:id/tags (add tag to task)
-Write-Host "TEST 12: POST /tasks/:id/tags (add tag)" -ForegroundColor Yellow
+# TEST 14: POST /tasks/:id/tags (add tag to task)
+Write-Host "TEST 14: POST /tasks/:id/tags (add tag)" -ForegroundColor Yellow
 $testsTotal++
 try {
     if ($taskId -and $tagId) {
@@ -334,8 +444,8 @@ try {
 
 Write-Host ""
 
-# TEST 13: GET /tasks/:id/tags (get task tags)
-Write-Host "TEST 13: GET /tasks/:id/tags" -ForegroundColor Yellow
+# TEST 15: GET /tasks/:id/tags (get task tags)
+Write-Host "TEST 15: GET /tasks/:id/tags" -ForegroundColor Yellow
 $testsTotal++
 try {
     if ($taskId) {
@@ -357,8 +467,8 @@ try {
 
 Write-Host ""
 
-# TEST 14: POST /tasks/:id/comments (create comment)
-Write-Host "TEST 14: POST /tasks/:id/comments (create comment)" -ForegroundColor Yellow
+# TEST 16: POST /tasks/:id/comments (create comment)
+Write-Host "TEST 16: POST /tasks/:id/comments (create comment)" -ForegroundColor Yellow
 $testsTotal++
 $commentId = $null
 try {
@@ -372,6 +482,7 @@ try {
         Write-Host "    Method: POST" -ForegroundColor Gray
         Write-Host "    URI: http://localhost:3000/tasks/$taskId/comments" -ForegroundColor Gray
         Write-Host "    Content-Type: application/json" -ForegroundColor Gray
+        Write-Host "  [DEBUG] TaskID: $taskId, UserID: $userId" -ForegroundColor Yellow
         Write-Host "  [REQUEST BODY]" -ForegroundColor Cyan
         Write-Host $body -ForegroundColor Gray
         
@@ -387,12 +498,18 @@ try {
     }
 } catch {
     Write-Host "  [ERROR] $($_.Exception.Message)" -ForegroundColor Red
+    try {
+        $errorResponse = $_ | ConvertFrom-Json
+        Write-Host "  [ERROR DETAILS] $($errorResponse.message)" -ForegroundColor Red
+    } catch {
+        Write-Host "  [ERROR RESPONSE] $($_.Exception.Response.Content)" -ForegroundColor Red
+    }
 }
 
 Write-Host ""
 
-# TEST 15: GET /tasks/:id/comments
-Write-Host "TEST 15: GET /tasks/:id/comments" -ForegroundColor Yellow
+# TEST 17: GET /tasks/:id/comments
+Write-Host "TEST 17: GET /tasks/:id/comments" -ForegroundColor Yellow
 $testsTotal++
 try {
     if ($taskId) {
@@ -414,8 +531,8 @@ try {
 
 Write-Host ""
 
-# TEST 16: PUT /tasks/:id/comments/:commentId (update comment)
-Write-Host "TEST 16: PUT /tasks/:id/comments/:commentId (update)" -ForegroundColor Yellow
+# TEST 18: PUT /tasks/:id/comments/:commentId (update comment)
+Write-Host "TEST 18: PUT /tasks/:id/comments/:commentId (update)" -ForegroundColor Yellow
 $testsTotal++
 try {
     if ($taskId -and $commentId) {
@@ -446,8 +563,8 @@ try {
 
 Write-Host ""
 
-# TEST 17: PATCH /tasks/:id/comments/:commentId (resolve comment)
-Write-Host "TEST 17: PATCH /tasks/:id/comments/:commentId (resolve)" -ForegroundColor Yellow
+# TEST 19: PATCH /tasks/:id/comments/:commentId (resolve comment)
+Write-Host "TEST 19: PATCH /tasks/:id/comments/:commentId (resolve)" -ForegroundColor Yellow
 $testsTotal++
 try {
     if ($taskId -and $commentId) {
@@ -477,8 +594,8 @@ try {
 
 Write-Host ""
 
-# TEST 18: GET /tags/:id/tasks (get tasks with tag)
-Write-Host "TEST 18: GET /tags/:id/tasks" -ForegroundColor Yellow
+# TEST 20: GET /tags/:id/tasks (get tasks with tag)
+Write-Host "TEST 20: GET /tags/:id/tasks" -ForegroundColor Yellow
 $testsTotal++
 try {
     if ($tagId) {
@@ -500,8 +617,8 @@ try {
 
 Write-Host ""
 
-# TEST 19: DELETE /tasks/:id/tags/:tagId (remove tag from task)
-Write-Host "TEST 19: DELETE /tasks/:id/tags/:tagId" -ForegroundColor Yellow
+# TEST 21: DELETE /tasks/:id/tags/:tagId (remove tag from task)
+Write-Host "TEST 21: DELETE /tasks/:id/tags/:tagId" -ForegroundColor Yellow
 $testsTotal++
 try {
     if ($taskId -and $tagId) {
@@ -524,8 +641,8 @@ try {
 
 Write-Host ""
 
-# TEST 20: DELETE /tasks/:id/comments/:commentId (delete comment)
-Write-Host "TEST 20: DELETE /tasks/:id/comments/:commentId" -ForegroundColor Yellow
+# TEST 22: DELETE /tasks/:id/comments/:commentId (delete comment)
+Write-Host "TEST 22: DELETE /tasks/:id/comments/:commentId" -ForegroundColor Yellow
 $testsTotal++
 try {
     if ($taskId -and $commentId) {
@@ -548,8 +665,8 @@ try {
 
 Write-Host ""
 
-# TEST 21: DELETE /tasks/:id
-Write-Host "TEST 21: DELETE /tasks/:id" -ForegroundColor Yellow
+# TEST 23: DELETE /tasks/:id
+Write-Host "TEST 23: DELETE /tasks/:id" -ForegroundColor Yellow
 $testsTotal++
 try {
     if ($taskId) {
@@ -572,8 +689,8 @@ try {
 
 Write-Host ""
 
-# TEST 22: DELETE /tags/:id
-Write-Host "TEST 22: DELETE /tags/:id" -ForegroundColor Yellow
+# TEST 24: DELETE /tags/:id
+Write-Host "TEST 24: DELETE /tags/:id" -ForegroundColor Yellow
 $testsTotal++
 try {
     if ($tagId) {
@@ -596,8 +713,8 @@ try {
 
 Write-Host ""
 
-# TEST 23: DELETE /users/:id (Note: May fail due to foreign key constraints if user is referenced)
-Write-Host "TEST 23: DELETE /users/:id (with FK check)" -ForegroundColor Yellow
+# TEST 25: DELETE /users/:id (Note: May fail due to foreign key constraints if user is referenced)
+Write-Host "TEST 25: DELETE /users/:id (with FK check)" -ForegroundColor Yellow
 $testsTotal++
 try {
     if ($userId) {
