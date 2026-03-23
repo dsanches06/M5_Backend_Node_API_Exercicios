@@ -16,18 +16,35 @@ export const getTasks = async (req, res) => {
 /* Função para criar tarefa */
 export const createTask = async (req, res) => {
   try {
-    const { title, userId } = req.body;
+    const { titulo, descricao, id_estado_tarefa, id_prioridade, id_categoria, id_projeto, horas_estimadas } = req.body;
 
-    if (!title || title.length <= 3) {
-      return res
-        .status(400)
-        .json({ error: "O título deve ter mais de 3 caracteres" });
+    // Validações apenas dos campos NOT NULL
+    if (!titulo || titulo.toString().trim().length === 0) {
+      return res.status(400).json({ error: "Titulo é obrigatório" });
     }
 
-    if (!userId) {
-      return res
-        .status(400)
-        .json({ error: "O ID do usuário não pode estar vazio" });
+    if (!descricao || descricao.toString().trim().length === 0) {
+      return res.status(400).json({ error: "Descricao é obrigatória" });
+    }
+
+    if (!id_estado_tarefa) {
+      return res.status(400).json({ error: "ID do estado da tarefa é obrigatório" });
+    }
+
+    if (!id_prioridade) {
+      return res.status(400).json({ error: "ID da prioridade é obrigatório" });
+    }
+
+    if (!id_categoria) {
+      return res.status(400).json({ error: "ID da categoria é obrigatório" });
+    }
+
+    if (!id_projeto) {
+      return res.status(400).json({ error: "ID do projeto é obrigatório" });
+    }
+
+    if (!horas_estimadas) {
+      return res.status(400).json({ error: "Horas estimadas é obrigatório" });
     }
 
     const task = await taskService.createTask(req.body);
@@ -40,29 +57,10 @@ export const createTask = async (req, res) => {
 /* Função para atualizar tarefa */
 export const updateTask = async (req, res) => {
   try {
-    const { title, userId, completed } = req.body;
-
-    if (title !== undefined && title.length <= 3) {
-      return res
-        .status(400)
-        .json({ error: "O título deve ter mais de 3 caracteres" });
-    }
-
-    if (userId !== undefined && !userId) {
-      return res
-        .status(400)
-        .json({ error: "O ID do usuário não pode estar vazio" });
-    }
-
-    req.body.completedDate =
-      completed === true ? new Date().toISOString() : undefined;
-
     const task = await taskService.updateTask(Number(req.params.id), req.body);
     res.json(task);
   } catch (error) {
-    res
-      .status(400)
-      .json({ error: `Erro ao atualizar tarefa: ${error.message}` });
+    res.status(400).json({ error: `Erro ao atualizar tarefa: ${error.message}` });
   }
 };
 
