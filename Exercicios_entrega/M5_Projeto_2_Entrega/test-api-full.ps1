@@ -68,6 +68,7 @@ Write-Host ""
 # TEST 4: POST /users
 Write-Host "TEST 4: POST /users" -ForegroundColor Yellow
 $testsTotal++
+$userId = $null
 try {
     $body = @{
         nome = "Test User $(Get-Random)"
@@ -87,6 +88,7 @@ try {
     Write-Host "  [RESPONSE JSON]" -ForegroundColor Cyan
     $json = $response.Content | ConvertFrom-Json
     Write-Host ($json | ConvertTo-Json -Depth 2) -ForegroundColor Gray
+    $userId = [int]$json.id
     $testsPassed++
 } catch {
     Write-Host "  [ERROR] $($_.Exception.Message)" -ForegroundColor Red
@@ -164,17 +166,8 @@ Write-Host ""
 # TEST 8: POST /tasks
 Write-Host "TEST 8: POST /tasks" -ForegroundColor Yellow
 $testsTotal++
-$userId = $null
 $taskId = $null
 try {
-    # First get a user to create a task for
-    $usersResponse = Invoke-WebRequest -Uri "http://localhost:3000/users" -Method GET -ErrorAction Stop
-    $usersJson = $usersResponse.Content | ConvertFrom-Json
-    
-    if ($usersJson.Count -gt 0) {
-        $userId = $usersJson[0].id
-    }
-    
     if ($userId) {
         $body = @{
             titulo = "Task Test $(Get-Random)"
@@ -198,10 +191,10 @@ try {
         Write-Host "  [RESPONSE JSON]" -ForegroundColor Cyan
         $json = $response.Content | ConvertFrom-Json
         Write-Host ($json | ConvertTo-Json -Depth 2) -ForegroundColor Gray
-        $taskId = $json.id
+        $taskId = [int]$json.id
         $testsPassed++
     } else {
-        Write-Host "  [ERROR] No users found" -ForegroundColor Red
+        Write-Host "  [ERROR] No user ID available" -ForegroundColor Red
     }
 } catch {
     Write-Host "  [ERROR] $($_.Exception.Message)" -ForegroundColor Red
@@ -369,10 +362,10 @@ Write-Host "TEST 14: POST /tasks/:id/comments (create comment)" -ForegroundColor
 $testsTotal++
 $commentId = $null
 try {
-    if ($taskId) {
+    if ($taskId -and $userId) {
         $body = @{
             content = "Test comment $(Get-Random)"
-            userId = $userId
+            userId = [int]$userId
         } | ConvertTo-Json
         
         Write-Host "  [HEADERS]" -ForegroundColor Cyan
@@ -390,7 +383,7 @@ try {
         $commentId = $json.id
         $testsPassed++
     } else {
-        Write-Host "  [ERROR] No task ID available" -ForegroundColor Red
+        Write-Host "  [ERROR] No task ID or user ID available" -ForegroundColor Red
     }
 } catch {
     Write-Host "  [ERROR] $($_.Exception.Message)" -ForegroundColor Red
