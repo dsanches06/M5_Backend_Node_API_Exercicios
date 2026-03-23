@@ -59,7 +59,10 @@ Pressione `Ctrl+C` no terminal.
 ## 📁 Estrutura do Projeto
 
 ```
+package.json              # Dependências e scripts
+database-init.sql         # Script de inicialização do banco
 src/
+├── .env                   # Variáveis de ambiente (criar localmente)
 ├── app.js                 # Aplicação Express principal
 ├── db.js                  # Configuração do banco de dados
 ├── controllers/           # Controladores das rotas
