@@ -70,7 +70,9 @@ src/
 │   ├── tagController.js
 │   └── userController.js
 ├── middlewares/           # Middlewares personalizados
+│   ├── authMiddleware.js
 │   ├── checkUserExists.js
+│   ├── errorHandler.js
 │   └── loggerMiddleware.js
 ├── routes/                # Definição das rotas
 │   ├── taskRoutes.js
