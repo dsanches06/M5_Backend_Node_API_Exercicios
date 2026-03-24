@@ -101,7 +101,7 @@ export const updateTask = async (taskId, data) => {
 /* Função para marcar tarefa como concluída */
 export const taskMarkedAsCompleted = async (taskId) => {
   const [result] = await db.query(
-    "UPDATE tarefa SET id_estado_tarefa = 5, data_conclusao = NOW() WHERE id = ?",  
+    "UPDATE tarefa SET id_estado_tarefa = 5, data_conclusao = NOW() WHERE id = ?",
     [taskId],
   );
   return result.affectedRows;
@@ -153,7 +153,7 @@ export const addTagToTask = async (taskId, tagId) => {
     [taskId, tagId],
   );
 
-  return { taskId, tagId };
+  return { taskId, tagId, relationId: result.insertId };
 };
 
 /* Função para remover etiqueta da tarefa */
@@ -188,11 +188,14 @@ export const getTaskStats = async () => {
   const [result] = await db.query("SELECT COUNT(*) as totalTasks FROM tarefa");
   const totalTasks = result[0].totalTasks;
 
-  const [completedResult] = await db.query("SELECT COUNT(*) as completedTasks FROM tarefa WHERE id_estado_tarefa = 5 AND data_conclusao IS NOT NULL");
+  const [completedResult] = await db.query(
+    "SELECT COUNT(*) as completedTasks FROM tarefa WHERE id_estado_tarefa = 5 AND data_conclusao IS NOT NULL",
+  );
   const completedTasks = completedResult[0].completedTasks;
 
   const pendingTasks = totalTasks - completedTasks;
-  const completedPercentage = totalTasks > 0 ? ((completedTasks / totalTasks) * 100).toFixed(2) : "0.00";
+  const completedPercentage =
+    totalTasks > 0 ? ((completedTasks / totalTasks) * 100).toFixed(2) : "0.00";
 
   return {
     totalTasks,

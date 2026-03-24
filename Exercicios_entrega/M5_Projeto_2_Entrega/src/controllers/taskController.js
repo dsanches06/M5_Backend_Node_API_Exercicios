@@ -45,18 +45,6 @@ export const createTask = async (req, res) => {
       return res.status(400).json({ error: "ID da prioridade é obrigatório" });
     }
 
-    if (!id_categoria) {
-      return res.status(400).json({ error: "ID da categoria é obrigatório" });
-    }
-
-    if (!id_projeto) {
-      return res.status(400).json({ error: "ID do projeto é obrigatório" });
-    }
-
-    if (!horas_estimadas) {
-      return res.status(400).json({ error: "Horas estimadas é obrigatório" });
-    }
-
     const task = await taskService.createTask(req.body);
     res.status(201).json(task);
   } catch (error) {
